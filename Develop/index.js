@@ -1,5 +1,11 @@
-const {prompt} = require('inquirer')
 const {getUser} = require('../develop/utils/api.js')
+const generateMarkdown = require('../develop/utils/generateMarkdown.js')
+const {prompt} = require('inquirer')
+const {appendFile, writeFile} = require('fs')
+const {promisify} = require('util')
+const appendFileSync = promisify(appendFile)
+const writeFileSync = promisify(writeFile)
+
 const list = ['Project title', 'Description','Table of contents','Installation','Usage','License', 'Contributing', 'Tests','Questions']
 const questions = []
 
@@ -12,12 +18,30 @@ list.forEach(item =>
     })
 })
 
-function writeToFile(fileName, data) {
+function writeToFile(fileName, userInfo) {
 
-   data.then(({data}) => {})
+  userInfo.then(({data}) => {
 
-   prompt(questions)
-   .then(resp => console.log(resp))
+    writeFileSync(fileName,'', function(err){
+        if(err)
+        console.log(err)
+    })
+    .then(() =>{
+     prompt(questions)
+    .then(resp => {
+        appendFileSync(fileName,data.avatar_url)
+        appendFileSync(fileName,data.name)
+        console.log(data)
+       for(const key in resp)
+       {
+            appendFileSync(fileName,generateMarkdown(key))
+            appendFileSync(fileName,resp[key])
+            console.log(key)
+            console.log(resp[key])
+       }
+   })})
+
+})
 }
 
 function init() {
