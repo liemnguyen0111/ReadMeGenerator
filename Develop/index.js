@@ -29,8 +29,9 @@ function writeToFile(fileName, userInfo) {
     .then(() =>{
      prompt(questions)
     .then(resp => {
-        appendFileSync(fileName,data.avatar_url)
-        appendFileSync(fileName,data.name)
+        appendFileSync(fileName,"# Profile:")
+        appendFileSync(fileName,`![profile Image](${data.avatar_url})`)
+        appendFileSync(fileName,`Name: ${data.name}`)
         console.log(data)
        for(const key in resp)
        {
